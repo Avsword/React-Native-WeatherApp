@@ -13,7 +13,7 @@ const Fetch = (props) => {
   }, [props.input]);
 
   useEffect(() => {
-    console.log('yea');
+    //console.log('yea');
 
     doStuff();
   }, [pressed]);

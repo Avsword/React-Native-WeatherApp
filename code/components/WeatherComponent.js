@@ -1,10 +1,10 @@
-import {Text,  View, Image } from 'react-native';
+import { Text, View, Image } from 'react-native';
 import { useState, useEffect } from 'react';
 import InputKeyComponent from './InputKey';
 
 const WeatherComponent = (props) => {
-  const response= props.response;
-  const setResp=props.setResponse;
+  const response = props.response;
+  const setResp = props.setResponse;
   const [weather, setWeather] = useState('');
   const [weatherIcon, setWeatherIcon] = useState('');
   const [weatherStatus, setWeatherStatus] = useState('sunny');
@@ -13,18 +13,16 @@ const WeatherComponent = (props) => {
   const setweatherAPIKEY = props.setapikey;
   const styles = props.style;
 
-  const currentOrForecast=useState(props.cof || '')
-
   //Update
   useEffect(() => {
-    console.log('response changed', response.toString());
-    if(response !== ''){
-    setWeather(response.current);
-    setLocationInAPI(response.location.name.toString());
-    setWeatherIcon('https:' + response.current.condition.icon.toString());
-    setWeatherStatus(response.current.condition.text);}
+    //console.log('response changed', response.toString());
+    if (response !== '') {
+      setWeather(response.current);
+      setLocationInAPI(response.location.name.toString());
+      setWeatherIcon('https:' + response.current.condition.icon.toString());
+      setWeatherStatus(response.current.condition.text);
+    }
   }, [response]);
-  
 
   return weatherAPIKEY ? (
     <View style={styles.weather}>
@@ -46,10 +44,13 @@ const WeatherComponent = (props) => {
         km/h
       </Text>
       <Text style={styles.weatherText}>Powered by: WeatherAPI.com</Text>
-      
     </View>
   ) : (
-    <InputKeyComponent style={styles.weather} setResponse={setResp} setKey={setweatherAPIKEY}/> 
+    <InputKeyComponent
+      style={styles.weather}
+      setResponse={setResp}
+      setKey={setweatherAPIKEY}
+    />
   );
 };
 export default WeatherComponent;

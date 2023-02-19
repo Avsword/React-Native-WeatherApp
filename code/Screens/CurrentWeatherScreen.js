@@ -1,6 +1,7 @@
 import WeatherComponent from '../components/WeatherComponent';
 import HeaderComponent from '../components/HeaderComponent';
 import LocationComponent from '../components/ChangeLocation';
+import MapComponent from '../components/MapComponent';
 import { View, StyleSheet } from 'react-native';
 import { useState } from 'react';
 
@@ -23,6 +24,7 @@ export default function CurrentWeatherScreen(props) {
         setResponse={setResponse}
         apikey={weatherAPIKEY}
       />
+      <MapComponent></MapComponent>
     </View>
   );
 }
@@ -34,11 +36,11 @@ const styles = StyleSheet.create({
   header: {
     flex: 1,
     backgroundColor: '#5ac7ed',
-    borderRadius: 20,
+    borderRadius: 10,
     margin: 8,
     justifyContent: 'center',
   },
-  headerText: { textAlign: 'center', fontSize: 50, fontFamily: 'Helvetica' },
+  headerText: { textAlign: 'center', fontSize: 30, fontFamily: 'Helvetica' },
   weather: {
     flex: 3,
     backgroundColor: '#5ac7ed',
@@ -54,12 +56,12 @@ const styles = StyleSheet.create({
   },
 
   weatherIcon: {
-    width: 128,
-    height: 128,
+    width: 64,
+    height: 64,
   },
   location: {
     flex: 1,
-    backgroundColor: '#5ac7ed',
+    backgroundColor: 'rgba(0,0,0,0.5)',
     justifyContent: 'center',
     border: '2px solid black',
   },

@@ -1,9 +1,15 @@
 import { Accelerometer } from 'expo-sensors';
-import { View, Text, StyleSheet } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ToastAndroid,
+  Button,
+  Linking,
+  Alert,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useState, useEffect } from 'react';
-import { Button } from 'react-native';
-import { ToastAndroid } from 'react-native';
 
 export default function LevelerScreen() {
   const [{ x, y, z }, setData] = useState({
@@ -26,6 +32,11 @@ export default function LevelerScreen() {
   const showCool = () => {
     ToastAndroid.show('I have no idea if this works', ToastAndroid.SHORT);
   };
+  const openGithub = async () => {
+    await Linking.openURL(
+      'https://github.com/Avsword/React-Native-WeatherApp',
+    ).then(Alert.alert('Github opened!'));
+  };
   return (
     <SafeAreaView
       // Change the background color based on the value of x
@@ -45,6 +56,9 @@ export default function LevelerScreen() {
       </Text>
       <View>
         <Button title='Click me' onPress={showCool}></Button>
+      </View>
+      <View>
+        <Button title='Open Github' onPress={openGithub}></Button>
       </View>
     </SafeAreaView>
   );

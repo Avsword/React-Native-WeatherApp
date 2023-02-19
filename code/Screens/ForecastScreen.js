@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { SafeAreaView, FlatList, ToastAndroid } from 'react-native';
 import axios from 'axios';
 import ForecastItem from '../components/ForecastItem';
+import DatePickerOptions from '@react-native-community/datetimepicker';
 
 export default function Forecast() {
   let input = '54df6cdb0b164605813221154221412';
@@ -12,15 +13,15 @@ export default function Forecast() {
   useEffect(() => {
     async function fetch() {
       if (input !== '') {
-        console.log('input', input);
+        //console.log('input', input);
         await axios
           .get('https://api.weatherapi.com/v1/forecast.json', {
             params: { key: input, q: q, days: '4' },
           })
           .then((response) => {
-            console.log('hello?', response.data.forecast.forecastday);
+            //console.log('hello?', response.data.forecast.forecastday);
             setData(response.data.forecast.forecastday);
-            console.log('updated', data);
+            //console.log('updated', data);
           })
           .catch((error) => {
             input = '';
@@ -30,6 +31,7 @@ export default function Forecast() {
           });
       }
     }
+
     fetch();
     ToastAndroid.show('I have no idea if this works', ToastAndroid.SHORT);
   }, []);
@@ -37,14 +39,14 @@ export default function Forecast() {
   //Update
   useEffect(() => {
     if (data !== ' ') {
-      console.log('updated', data);
+      //console.log('updated', data);
     }
   }, [data]);
 
   return (
     <SafeAreaView>
       <DatePickerOptions
-        testID={date}
+        value={date}
         onChange={(date) => setDate(date)}
         mode='date'
       ></DatePickerOptions>

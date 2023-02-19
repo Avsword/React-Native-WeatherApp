@@ -3,7 +3,7 @@ import { useEffect, useState, useCallback } from 'react';
 import axios from 'axios';
 
 const LocationComponent = (props) => {
-  const [q, setQ] = useState(props.location || '');
+  const [q, setQ] = useState(props.location || 'Tampere');
   const [pressed, setPressed] = useState(true);
   const [key, setKey] = useState(props.apikey || '');
   const styles = props.style;
@@ -17,19 +17,6 @@ const LocationComponent = (props) => {
   }, [props.apikey]);
 
   useEffect(() => {
-    /* //Get the location
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        setQ(
-          position.coords.latitude.toString() +
-            ',' +
-            position.coords.longitude.toString(),
-        );
-      },
-      (error) => {
-        console.warn(`ERROR GETTING THE LOCATION DATA, ${error.code}`);
-      },
-    ); */
     doStuff();
   }, [pressed, doStuff]);
 
@@ -42,8 +29,8 @@ const LocationComponent = (props) => {
           params: { key: key, q: q },
         })
         .then((response) => {
-          console.log(response);
-          console.log('updated');
+          // console.log(response);
+          // console.log('updated');
           const setResponse = props.setResponse;
           setResponse(response.data);
         })
@@ -58,7 +45,7 @@ const LocationComponent = (props) => {
 
   return (
     <View style={styles}>
-      <TextInput onChangeText={setQ} placeholder={q} />
+      <TextInput onChangeText={setQ} placeholder={'New location here!'} />
       <Button
         onPress={() => {
           setPressed(!pressed);
