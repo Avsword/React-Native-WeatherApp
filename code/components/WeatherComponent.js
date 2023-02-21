@@ -5,10 +5,10 @@ import InputKeyComponent from './InputKey';
 const WeatherComponent = (props) => {
   const response = props.response;
   const setResp = props.setResponse;
-  const [weather, setWeather] = useState('');
+  const [weather, setWeather] = useState('../assets/sunny.png');
   const [weatherIcon, setWeatherIcon] = useState('');
   const [weatherStatus, setWeatherStatus] = useState('sunny');
-  const [locationInAPI, setLocationInAPI] = useState('nully');
+  const [locationInAPI, setLocationInAPI] = useState('');
   const weatherAPIKEY = props.apikey;
   const setweatherAPIKEY = props.setapikey;
   const styles = props.style;
@@ -29,12 +29,14 @@ const WeatherComponent = (props) => {
       <Text style={styles.weatherText}>
         Current weather in {locationInAPI}: {weatherStatus}
       </Text>
-      <Image
-        style={styles.weatherIcon}
-        source={{
-          uri: weatherIcon,
-        }}
-      />
+      {
+        <Image
+          style={styles.weatherIcon}
+          source={{
+            uri: weatherIcon,
+          }}
+        />
+      }
       <Text style={styles.weatherText}>
         Temperature is: {weather.temp_c} °C and it feels like:{' '}
         {weather.feelslike_c} °C

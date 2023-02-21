@@ -1,36 +1,36 @@
-import { Text, View, StyleSheet, Image, Button, TextInput } from 'react-native';
+import { Text, View, Pressable, TextInput, StyleSheet } from 'react-native';
 import { useEffect, useState, useCallback } from 'react';
 import axios from 'axios';
+import * as Location from 'expo-location';
 
 const LocationComponent = (props) => {
-  const [q, setQ] = useState(props.location || 'Tampere');
+  const [q, setQ] = useState(
+    props.location == undefined ? 'Oslo' : props.location,
+  );
   const [pressed, setPressed] = useState(true);
-  const [key, setKey] = useState(props.apikey || '');
-  const styles = props.style;
-
-  useEffect(() => {
-    setQ(props.location);
-  }, [props.location]);
+  const [key, setKey] = useState(props.apikey);
+  const [loading, setLoading] = useState(false);
+  const [locationInput, setLocationInput] = useState('');
 
   useEffect(() => {
     setKey(props.apikey);
   }, [props.apikey]);
 
   useEffect(() => {
-    doStuff();
-  }, [pressed, doStuff]);
+    fetch();
+  }, [pressed, fetch, q]);
 
-  const doStuff = useCallback(async () => {
+  const fetch = useCallback(async () => {
+    if (locationInput !== '') {
+      await setQ(locationInput);
+    }
+
     if (q !== '') {
-      console.log(q);
-
       await axios
         .get('https://api.weatherapi.com/v1/current.json', {
           params: { key: key, q: q },
         })
         .then((response) => {
-          // console.log(response);
-          // console.log('updated');
           const setResponse = props.setResponse;
           setResponse(response.data);
         })
@@ -41,19 +41,112 @@ const LocationComponent = (props) => {
           );
         });
     }
-  }, [key, props.setResponse, q]);
+  }, [key, props.setResponse, q, locationInput]);
 
-  return (
-    <View style={styles}>
-      <TextInput onChangeText={setQ} placeholder={'New location here!'} />
-      <Button
+  const getLocationAndPermissions = async () => {
+    // Loader
+    setLoading(true);
+
+    // On mount we ask for the permission to use the location.
+    // Since the normal Location in React Native is deprecated, we'll use Expo-location.
+
+    // We get the status of the permission.
+    // Pretty sure this works for ios and android.
+    let { status } = await Location.requestForegroundPermissionsAsync();
+    // If we don't have the permission, then we'll throw out an error and return the func.
+    if (status !== 'granted') {
+      console.error('Permission to access location was denied');
+      return;
+      //throw new Error('Permission to access location was denied');
+    }
+    // If we get here, then we have the permission.
+    // TODO: We'll need to implement a loading screen for when the await isn't completed.
+    let location = await Location.getCurrentPositionAsync({});
+    console.log(
+      'LOCATION GOT FROM SYSTEM: ' +
+        location.coords.latitude +
+        ', ' +
+        location.coords.longitude,
+    );
+    await setQ(
+      String(location.coords.latitude + ',' + location.coords.longitude),
+    );
+    await fetch();
+    setLoading(false);
+  };
+
+  return !loading ? (
+    <View style={styling.container}>
+      <TextInput
+        value={locationInput}
+        onChangeText={setLocationInput}
+        placeholder={'New location here!'}
+        placeholderTextColor={'gray'}
+        style={styling.TextInput}
+      />
+      <Pressable
+        style={styling.Pressables}
         onPress={() => {
           setPressed(!pressed);
         }}
         title='Change Location'
-      />
+      >
+        <Text>Change Location</Text>
+      </Pressable>
+      <Pressable
+        style={styling.Pressables}
+        onPress={() => {
+          getLocationAndPermissions();
+        }}
+        title='Get current location'
+      >
+        <Text>Get current location</Text>
+      </Pressable>
+    </View>
+  ) : (
+    <View style={styling.loadingContainer}>
+      {/* <SvgLoader color='Blue' size={64}></SvgLoader> */}
+      <Text style={styling.loadingText}>Loading...</Text>
+      {/* <Image source={loaderGif} style={styling.loader}></Image> */}
     </View>
   );
 };
-
+const styling = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    textAlign: 'center',
+    marginVertical: 40,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.2)',
+    textAlign: 'center',
+    paddingVertical: 10,
+  },
+  loadingText: {
+    color: '#e3ebef',
+  },
+  Pressables: {
+    width: '50%',
+    backgroundColor: '#e3ebef',
+    textAlign: 'center',
+    padding: 10,
+    marginBottom: 10,
+    borderRadius: 10,
+  },
+  PressableText: {
+    color: '#e3ebef',
+    marginBottom: 10,
+  },
+  TextInput: {
+    marginBottom: 10,
+    padding: 10,
+    height: 40,
+    color: '#e3ebef',
+  },
+});
 export default LocationComponent;

@@ -1,4 +1,4 @@
-import { Text, View, StyleSheet, Image, Button } from 'react-native';
+import { TextArea, View, StyleSheet, Image, Button } from 'react-native';
 import { useEffect, useState, useCallback } from 'react';
 import axios from 'axios';
 const Fetch = (props) => {
@@ -13,12 +13,10 @@ const Fetch = (props) => {
   }, [props.input]);
 
   useEffect(() => {
-    //console.log('yea');
-
-    doStuff();
+    fetch();
   }, [pressed]);
 
-  const doStuff = async () => {
+  const fetch = async () => {
     if (input !== '') {
       console.log(input);
 
@@ -46,6 +44,7 @@ const Fetch = (props) => {
 
   return (
     <View>
+      <TextArea>heya</TextArea>
       <Button
         onPress={() => {
           setPressed(!pressed);

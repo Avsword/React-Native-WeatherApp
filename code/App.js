@@ -3,17 +3,21 @@ import { createMaterialBottomTabNavigator } from '@react-navigation/material-bot
 import { NavigationContainer } from '@react-navigation/native';
 import ForecastScreen from './Screens/ForecastScreen';
 import LevelerScreen from './Screens/LevelerScreen';
-import { API_TOKEN } from '@env';
 
 export default function App() {
   const Tab = createMaterialBottomTabNavigator();
 
   return (
     <NavigationContainer>
-      <Tab.Navigator>
-        <Tab.Screen name='Leveler' component={LevelerScreen} />
+      <Tab.Navigator
+        barStyle={{ backgroundColor: '#242a28' }}
+        activeColor='#ffffff'
+        inactiveColor='#e3ebef'
+        tabBarLabelStyle={{ fontSize: 28 }}
+      >
         <Tab.Screen name='Forecast' component={ForecastScreen} />
         <Tab.Screen name='Current' component={CurrentWeatherScreen} />
+        <Tab.Screen name='Leveler' component={LevelerScreen} />
       </Tab.Navigator>
     </NavigationContainer>
   );

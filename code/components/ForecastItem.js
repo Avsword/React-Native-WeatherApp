@@ -5,8 +5,7 @@ const ForecastItem = ({ date, temp, wind, icon, weather }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.item}>
-        {date} - It will be {weather} with an average temperature of {temp}{' '}
-        degrees celsius and {wind} kph wind speed.
+        {date} - It will be {weather} with an average temperature of {temp} °C
       </Text>
       <Image
         style={styles.weatherIcon}
@@ -20,8 +19,11 @@ const ForecastItem = ({ date, temp, wind, icon, weather }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'pink',
-    marginBottom: 20,
+    backgroundColor: '#e3ebef',
+    margin: 20,
+    borderRadius: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   item: {
     padding: 20,
@@ -29,10 +31,11 @@ const styles = StyleSheet.create({
     marginHorizontal: 16,
     flex: 1,
     flexDirection: 'row',
+    textAlign: 'center',
   },
   weatherIcon: {
-    width: 128,
-    height: 128,
+    width: 64,
+    height: 64,
   },
 });
 export default ForecastItem;

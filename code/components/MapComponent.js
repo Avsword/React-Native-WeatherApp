@@ -31,7 +31,7 @@ const MapComponent = (props) => {
 
   return (
     <View style={styles.container}>
-      <Text>Open in Maps!</Text>
+      <Text style={{ color: '#e3ebef' }}>Open in Maps!</Text>
       <Button onPress={openMap} title='Open in Maps' />
     </View>
   );
@@ -40,10 +40,10 @@ const MapComponent = (props) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#8ef0d3',
     justifyContent: 'center',
     alignItems: 'center',
     padding: 8,
+    textAlign: 'center',
   },
 });
 
