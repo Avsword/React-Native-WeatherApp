@@ -33,7 +33,6 @@ export default function Forecast() {
     }
 
     fetch();
-    ToastAndroid.show('I have no idea if this works', ToastAndroid.SHORT);
   }, []);
 
   //Update

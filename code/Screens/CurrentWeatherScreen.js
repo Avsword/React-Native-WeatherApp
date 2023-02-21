@@ -4,9 +4,10 @@ import LocationComponent from '../components/ChangeLocation';
 import MapComponent from '../components/MapComponent';
 import { View, StyleSheet } from 'react-native';
 import { useState } from 'react';
+import { API_TOKEN } from '@env';
 
 export default function CurrentWeatherScreen(props) {
-  const [weatherAPIKEY, setweatherAPIKEY] = useState('');
+  const [weatherAPIKEY, setweatherAPIKEY] = useState(API_TOKEN || '');
   const [response, setResponse] = useState('');
 
   return (

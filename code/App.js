@@ -3,6 +3,7 @@ import { createMaterialBottomTabNavigator } from '@react-navigation/material-bot
 import { NavigationContainer } from '@react-navigation/native';
 import ForecastScreen from './Screens/ForecastScreen';
 import LevelerScreen from './Screens/LevelerScreen';
+import { API_TOKEN } from '@env';
 
 export default function App() {
   const Tab = createMaterialBottomTabNavigator();
