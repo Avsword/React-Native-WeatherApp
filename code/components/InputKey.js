@@ -1,10 +1,13 @@
 import { StyleSheet, Text, Button, TextInput, View, Image } from 'react-native';
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import FetchButton from './FetchButton';
+import { API_TOKEN } from '@env';
 
+// Basically we don't need this now that we have dotenv configured and working, but.
+// I'm keeping it here for reference and to show that I know how to get
+// user input in case the dotenv doesn't work.
 const InputKeyComponent = (props) => {
-  const [userInput, setuserInput] = useState('54df6cdb0b164605813221154221412');
+  const [userInput, setuserInput] = useState(API_TOKEN || '');
 
   return (
     <View>

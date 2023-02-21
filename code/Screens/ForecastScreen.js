@@ -3,9 +3,10 @@ import { SafeAreaView, FlatList, ToastAndroid } from 'react-native';
 import axios from 'axios';
 import ForecastItem from '../components/ForecastItem';
 import DatePickerOptions from '@react-native-community/datetimepicker';
+import { API_TOKEN } from '@env';
 
 export default function Forecast() {
-  let input = '54df6cdb0b164605813221154221412';
+  let input = API_TOKEN;
   const q = 'tampere';
   const [data, setData] = useState([]);
   const [date, setDate] = useState(new Date());
