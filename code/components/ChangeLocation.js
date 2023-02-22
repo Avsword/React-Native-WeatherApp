@@ -1,7 +1,46 @@
-import { Text, View, Pressable, TextInput, StyleSheet } from 'react-native';
+import {
+  Text,
+  View,
+  Pressable,
+  TextInput,
+  StyleSheet,
+  Animated,
+} from 'react-native';
 import { useEffect, useState, useCallback } from 'react';
 import axios from 'axios';
 import * as Location from 'expo-location';
+
+const getLocationAndPermissions = async (setQ, fetch, setLoading) => {
+  // Loader
+  setLoading(true);
+
+  // On mount we ask for the permission to use the location.
+  // Since the normal Location in React Native is deprecated, we'll use Expo-location.
+
+  // We get the status of the permission.
+  // Pretty sure this works for ios and android.
+  let { status } = await Location.requestForegroundPermissionsAsync();
+  // If we don't have the permission, then we'll throw out an error and return the func.
+  if (status !== 'granted') {
+    console.error('Permission to access location was denied');
+    return;
+    //throw new Error('Permission to access location was denied');
+  }
+  // If we get here, then we have the permission.
+  // TODO: We'll need to implement a loading screen for when the await isn't completed.
+  let location = await Location.getCurrentPositionAsync({});
+  console.log(
+    'LOCATION GOT FROM SYSTEM: ' +
+      location.coords.latitude +
+      ', ' +
+      location.coords.longitude,
+  );
+  await setQ(
+    String(location.coords.latitude + ',' + location.coords.longitude),
+  );
+  await fetch();
+  setLoading(false);
+};
 
 const LocationComponent = (props) => {
   const [q, setQ] = useState(
@@ -11,6 +50,13 @@ const LocationComponent = (props) => {
   const [key, setKey] = useState(props.apikey);
   const [loading, setLoading] = useState(false);
   const [locationInput, setLocationInput] = useState('');
+  const [opacity, setOpacity] = useState(1);
+
+  // On mount we'd very much like for the component to get the current location.
+  // We'll also start the animation
+  useEffect(() => {
+    getLocationAndPermissions(setQ, fetch, setLoading);
+  }, []);
 
   useEffect(() => {
     setKey(props.apikey);
@@ -24,7 +70,6 @@ const LocationComponent = (props) => {
     if (locationInput !== '') {
       await setQ(locationInput);
     }
-
     if (q !== '') {
       await axios
         .get('https://api.weatherapi.com/v1/current.json', {
@@ -42,38 +87,6 @@ const LocationComponent = (props) => {
         });
     }
   }, [key, props.setResponse, q, locationInput]);
-
-  const getLocationAndPermissions = async () => {
-    // Loader
-    setLoading(true);
-
-    // On mount we ask for the permission to use the location.
-    // Since the normal Location in React Native is deprecated, we'll use Expo-location.
-
-    // We get the status of the permission.
-    // Pretty sure this works for ios and android.
-    let { status } = await Location.requestForegroundPermissionsAsync();
-    // If we don't have the permission, then we'll throw out an error and return the func.
-    if (status !== 'granted') {
-      console.error('Permission to access location was denied');
-      return;
-      //throw new Error('Permission to access location was denied');
-    }
-    // If we get here, then we have the permission.
-    // TODO: We'll need to implement a loading screen for when the await isn't completed.
-    let location = await Location.getCurrentPositionAsync({});
-    console.log(
-      'LOCATION GOT FROM SYSTEM: ' +
-        location.coords.latitude +
-        ', ' +
-        location.coords.longitude,
-    );
-    await setQ(
-      String(location.coords.latitude + ',' + location.coords.longitude),
-    );
-    await fetch();
-    setLoading(false);
-  };
 
   return !loading ? (
     <View style={styling.container}>
@@ -96,7 +109,7 @@ const LocationComponent = (props) => {
       <Pressable
         style={styling.Pressables}
         onPress={() => {
-          getLocationAndPermissions();
+          getLocationAndPermissions(setQ, fetch, setLoading);
         }}
         title='Get current location'
       >
@@ -104,9 +117,11 @@ const LocationComponent = (props) => {
       </Pressable>
     </View>
   ) : (
-    <View style={styling.loadingContainer}>
+    <View style={[styling.loadingContainer]}>
       {/* <SvgLoader color='Blue' size={64}></SvgLoader> */}
-      <Text style={styling.loadingText}>Loading...</Text>
+      <Text style={styling.loadingText}>
+        Getting your current location, please hold on
+      </Text>
       {/* <Image source={loaderGif} style={styling.loader}></Image> */}
     </View>
   );
@@ -123,12 +138,12 @@ const styling = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0,0,0,0.2)',
+    backgroundColor: '#e3ebef',
     textAlign: 'center',
-    paddingVertical: 10,
+    paddingVertical: 50,
   },
   loadingText: {
-    color: '#e3ebef',
+    color: '#242a28',
   },
   Pressables: {
     width: '50%',
@@ -149,4 +164,4 @@ const styling = StyleSheet.create({
     color: '#e3ebef',
   },
 });
-export default LocationComponent;
+export { LocationComponent, getLocationAndPermissions };

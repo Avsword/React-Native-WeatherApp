@@ -5,8 +5,8 @@ import InputKeyComponent from './InputKey';
 const WeatherComponent = (props) => {
   const response = props.response;
   const setResp = props.setResponse;
-  const [weather, setWeather] = useState('../assets/sunny.png');
-  const [weatherIcon, setWeatherIcon] = useState('');
+  const [weather, setWeather] = useState('../assets/GifLoader.gif');
+  const [weatherIcon, setWeatherIcon] = useState('../assets/GifLoader.gif');
   const [weatherStatus, setWeatherStatus] = useState('sunny');
   const [locationInAPI, setLocationInAPI] = useState('');
   const weatherAPIKEY = props.apikey;

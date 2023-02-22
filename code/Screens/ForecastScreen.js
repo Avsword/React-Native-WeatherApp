@@ -1,5 +1,13 @@
 import { useState, useEffect } from 'react';
-import { SafeAreaView, FlatList, Text, StyleSheet, View } from 'react-native';
+import {
+  SafeAreaView,
+  FlatList,
+  Text,
+  StyleSheet,
+  View,
+  Button,
+  Dimensions,
+} from 'react-native';
 import axios from 'axios';
 import ForecastItem from '../components/ForecastItem';
 import DatePickerOptions from '@react-native-community/datetimepicker';
@@ -20,7 +28,7 @@ export default function Forecast() {
   const [displayMethod, setDisplayMethod] = useState('forecast');
   // As previously mentioned, it is by default set to 3. Should the date change, then
   //      we'll calculate the difference between the current date and the new date.
-  const [days, setDays] = useState(3);
+  const [days, setDays] = useState(7);
 
   // We'll use this in order to avoid undefined errors
   let changeAfterFetch = false;
@@ -29,15 +37,14 @@ export default function Forecast() {
   //  the difference between the current date and the new date.
   //  then fetch that many days from the API and output the last item.
   useEffect(() => {
-    console.log(date.getDate() + ' ' + new Date(Date.now()).getDate());
     if (parseInt(date.getDate()) != parseInt(new Date(Date.now()).getDate())) {
-      console.log('Date changed and changeafter was set to true');
       changeAfterFetch = true;
       // Calculate the difference between the current date and the new date.
       // If the difference between days is larger than 2 (Since I am on the free version)
       if (
         parseInt(date.getDate()) - parseInt(new Date(Date.now()).getDate()) >
-        2
+          2 ||
+        parseInt(date.getDate()) - parseInt(new Date(Date.now()).getDate()) < 0
       ) {
         alert(
           'You can only choose a date that is 2 days from now or today. Sorry for the inconvenience.',
@@ -52,11 +59,11 @@ export default function Forecast() {
           parseInt(date.getDate()) - parseInt(new Date(Date.now()).getDate()),
         );
       }
+    } else {
+      changeAfterFetch = false;
     }
     // Await the fetch and then update it.
     fetch();
-
-    console.log('The item I want to update is... ' + JSON.stringify(data));
   }, [date]);
 
   //Update
@@ -76,34 +83,37 @@ export default function Forecast() {
     console.log('Fetching...');
     setLoading(true);
     if (input !== '') {
-      //console.log('input', input);
-      console.log('days' + days);
       await axios
         .get('https://api.weatherapi.com/v1/forecast.json', {
           params: { key: input, q: q, days: days, hour: 0 },
         })
         .then((response) => {
-          // TODO:
-          /**
-           * Currently this gives me the output of: "2023-02-23"
-           * I want to... somehow set the data to be only that.
-           */
-          if (changeAfterFetch) {
-            console.log(
-              'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA' +
-                'date: ' +
-                date +
-                JSON.stringify(response.data.forecast.forecastday[2].date),
-            );
-            //setData(response.data.forecast.forecastday[date - 1]);
-          } else {
-            setData(response.data.forecast.forecastday);
+          if (response !== undefined) {
+            if (changeAfterFetch) {
+              setData(
+                response.data.forecast.forecastday[
+                  parseInt(date.getDate()) - parseInt(new Date().getDate())
+                ],
+              );
+            } else {
+              setDisplayMethod('forecast');
+              setData(response.data.forecast.forecastday);
+            }
           }
         })
         .then(() => {
           // After everything is done, then check if we actually change the displa
           if (changeAfterFetch) {
             setDisplayMethod('date');
+          }
+        })
+        .then(() => {
+          // If after all the fetches are done and the data is still undefined, then fetch again, since there might be an error with the
+          //    data fetching and changeafterfetch and displaymethod.
+
+          if (typeof data === undefined) {
+            console.log('Had to re-fetch.');
+            fetch();
           }
         })
         .catch((error) => {
@@ -132,10 +142,11 @@ export default function Forecast() {
       </View>
 
       <FlatList
+        style={{ marginBottom: 100 }}
         key={'ForecastList'}
         data={data}
         initialNumToRender={days}
-        windowSize={days}
+        /* windowSize={days} */
         maxToRenderPerBatch={days}
         keyExtractor={(item, index) => 'ForecastItem' + index}
         renderItem={({ item }) => (
@@ -170,16 +181,28 @@ export default function Forecast() {
       />
     </SafeAreaView>
   ) : (
-    <View>
+    <SafeAreaView style={styling.errorScreen}>
       <Text>Something went wrong...</Text>
-    </View>
+      <Button
+        title='Refresh'
+        onPress={() => {
+          setDate(new Date(Date.now()));
+          fetch();
+        }}
+      ></Button>
+    </SafeAreaView>
   );
 }
+
+// Had some issues with the width, so we'll just get the screen width and set it to that and we'll be gucci :)
+const width = Dimensions.get('screen').width;
 
 const styling = StyleSheet.create({
   background: {
     backgroundColor: '#242a28',
     alignSelf: 'flex-start',
+    width: width,
+    paddingBottom: 2,
   },
   lightText: {
     color: '#e3ebef',
@@ -190,5 +213,12 @@ const styling = StyleSheet.create({
     alignSelf: 'center',
     borderRadius: 20,
     width: 100,
+    marginVertical: 10,
+  },
+  errorScreen: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    textAlign: 'center',
   },
 });

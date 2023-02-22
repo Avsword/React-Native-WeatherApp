@@ -1,6 +1,6 @@
 import WeatherComponent from '../components/WeatherComponent';
 import HeaderComponent from '../components/HeaderComponent';
-import LocationComponent from '../components/ChangeLocation';
+import { LocationComponent } from '../components/ChangeLocation';
 import MapComponent from '../components/MapComponent';
 import { View, StyleSheet } from 'react-native';
 import { useState } from 'react';

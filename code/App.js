@@ -15,8 +15,8 @@ export default function App() {
         inactiveColor='#e3ebef'
         tabBarLabelStyle={{ fontSize: 28 }}
       >
-        <Tab.Screen name='Forecast' component={ForecastScreen} />
         <Tab.Screen name='Current' component={CurrentWeatherScreen} />
+        <Tab.Screen name='Forecast' component={ForecastScreen} />
         <Tab.Screen name='Leveler' component={LevelerScreen} />
       </Tab.Navigator>
     </NavigationContainer>
